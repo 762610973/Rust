@@ -5,6 +5,7 @@ use std::cmp::Ordering;
 
 fn main(){
     println!("猜数"); //带着 ！是一个宏
+    println!("hello");
     let secret_number = rand::thread_rng().gen_range(1,101); //i32,u32,i64
     println!("神秘数字是：{}",secret_number);
     loop {
