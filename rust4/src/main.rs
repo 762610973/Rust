@@ -7,4 +7,12 @@ fn main() {
         println!("number is {}",number);
     }
     println!("end");
+    let (a,b) = test();
+    println!("a =  {}",a);
+    println!("b =  {}",b);
+
+}
+
+fn test() -> (i32,f32) {
+    return (3,3.3);
 }
