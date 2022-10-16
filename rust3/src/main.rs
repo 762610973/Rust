@@ -1,4 +1,5 @@
 const THE_CONST_NUMBER: i32 = 100;
+
 fn main() {
     test_for_2();
     test_for();
@@ -127,6 +128,7 @@ fn double_loop() {
     println!("End count =  {}", count);
 }
 
+// return_loop 从loop中接收返回值
 fn return_loop() {
     let mut counter = 0;
     let res = loop {
@@ -137,6 +139,7 @@ fn return_loop() {
     };
     println!("res =  {}", res);
 }
+
 fn test_for() {
     let mut number = 3;
     while number != 0 {
