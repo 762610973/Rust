@@ -72,17 +72,20 @@ fn main4() {
     println!("six = {:?}", six);
     let none = plus_one(None);
 }
+
 enum Coin {
     Penny,
     Nickel,
     Dime,
     Quarter(UsState),
 }
+
 #[derive(Debug)]
 enum UsState {
     Alabama,
     Alaska,
 }
+
 fn value_in_cents(coin: Coin) -> u8 {
     match coin {
         Coin::Penny => {

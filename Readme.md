@@ -139,6 +139,7 @@
       let r3 = &mut s;  // 没问题:r1和r2的作用域已经结束了,作用域没有重叠,编译器在作用域结束之前判断不再使用的引用的能力被称为非词法作用域生命周期 
   }
   ```
+
 ### 悬垂引用
 
 > 指针指向曾经存在的某处内存地址,但该内存已经被释放掉甚至是被重新分配另作他用了
@@ -147,9 +148,10 @@
 -
 
 ```rust
-fn main(){
+fn main() {
     let _reference_to_nothing = dangle();
 }
+
 fn dangle() -> &String {            //dangle会返回一个指向String的引用
     let s = String::from("hello");  //s被绑定到新的String上
     &s                              //将指向s的引用返回给调用者
@@ -165,6 +167,7 @@ fn dangle() -> &String {            //dangle会返回一个指向String的引用
 
 ## 使用结构体组织关联数据
 - 
+
 ```rust
 struct User {
     active: bool,
@@ -172,7 +175,8 @@ struct User {
     email: String,
     sign_in_count: u64,
 }
-fn main(){
+
+fn main() {
     let mut user1 = User {
         email: String::from("762610973@qq.com"),
         username: String::from("umbrella"),
@@ -186,46 +190,111 @@ fn main(){
         sign_in_count: user1.sign_in_count,*/
         ..user1
     };
-	// 此时user1的email和username字段不能再使用了,另外两个可以
+    // 此时user1的email和username字段不能再使用了,另外两个可以
 }
 ```
+
 - 元组结构体:`struct Color(i32, i32, i32)`
 - 类单元结构体:类似Go的空结构,,,,,,,体:`struct Always`,实现trait,而不需要数据
 - 结构体没有Display实现
-- 
+-
+
 ```rust
-#[derive(Debug)]	//{:?} debug打印,{:#?} 美观地打印
+#[derive(Debug)]    //{:?} debug打印,{:#?} 美观地打印
 struct Rectangle {
     width: u32,
     height: u32,
 }
 
-impl Rectangle {	//实现方法,&self <=> self:&Self
+impl Rectangle {
+    //实现方法,&self <=> self:&Self
     fn area(&self, a: u32) -> u32 {
         self.width * self.height * a
     }
-	fn can_hole(&self,other: &Rectangle) -> bool {
-		self.width > other.width && self.height > other.height
-	}
+    fn can_hole(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
 }
 // 调用时直接用就行了,rust会自动引用和解引用
 ```
+
 - 所有在impl块中定义的函数被称为关联函数
 
 ## 枚举和模式匹配
+
 - 枚举允许通过列举可能的成员来定义一个类型,枚举值只可能是其中一个成员
 - 枚举的成员位于其标识符的命名空间中,使用两个冒号分开
 - 枚举是一个单独的类型,可以使用impl为枚举定义方法
 - Option:一个值要么有值要么没值,如果使用None而不是Some,需要告诉rustOption<T>是什么类型的
+
 ```rust
-// T是泛型参数,意思是可以是任何类型的数据
+// T是泛型参数,意思是可以是任何类型的数据 
 enum Option<T> {
-	Some(T),
-	None,
+    Some(T),
+    None,
 }
 ```
+
 - match允许将一个值与一系列的模式想比较,并根据相匹配的模式执行相关代码.模式可由字面量、变量、通配符和许多其他内容组成
 - 匹配分支的另一个有用的功能是可以绑定匹配的模式的部分值
 - Rust中的匹配时穷举式的:必须穷举到最后的可能性来时代码有效.
 - if let语法来处理只匹配一个模式的值而忽略其他模式的情况,是match的一个语法糖,当值匹配某一个模式时执行代码而忽略其它所有值
-- 
+
+## 07|使用包、Crate和模块管理不断增长的项目
+
+- 模块系统:
+	- 包(Packages):Cargo的一个功能,它允许构建、测试和分享crate
+	- Crates:一个模块的属性结构,它形成了库或二进制项目
+	- 模块和use(Modules):允许控制作用域和路径的私有性
+	- 路径(path):一个命名例如结构体、函数或模块等项的方式
+
+### 包和crate
+
+- crate是一个二进制项或库.crate root是一个源文件,Rust编译器以它为起点,构成crate的跟模块
+- 包(package)是提供一系列功能的一个或多个crate.一个包会包含有一个Cargo.toml文件,阐述如何构建这些crate
+- 包中内容的规则:
+	- 一个包至多只能包含一个库crate
+	- 包中可以包含任意多个二进制crate
+	- 包中至少包含一个crate
+- `src/main.rs`是一个与包同名的二进制crate的crate根.
+
+### 定义模块来控制作用域与私有性
+
+- 模块可以将一个crate中的代码进行分组,以提高可读性与重用性.
+- 模块可以控制项的私有性
+- 关键字`mod`定义模块,指定模块的名字,模块中可以包含其他模块,也可以包含项、结构体、枚举、常量、trait
+- crate
+  └── front_of_house
+  ├── hosting
+  │ ├── add_to_wait_list
+  │ └── seat_at_table
+  └── serving
+  ├── take_order
+  ├── serve_order
+  └── take_payment
+
+### 路径用于引用模块树中的项
+
+- 路径
+	- 绝对路径:从crate根部开始,以crate名或者字面量crate开头
+	- 相对路径:从当前模块开始,以self、super或当前模块的标识符开头
+- 更倾向于使用绝对路径,因为把代码定义和项目调用各自独立地移动是更常见的
+- Rust的私有性边界:不允许外部代码了解、调用和依赖被封装的实现细节
+- 默认所有项(函数、方法、结构体、枚举、模块和常量)都是私有的
+- **使用pub关键字暴露路径**
+- **使用super起始的相对路径**
+- 枚举成员默认是公有的(私有化意义不大)
+
+### 使用use关键字将名称引入作用域
+
+- 在作用域中增加use和路径类似于在文件系统中创建软链接
+- 使用use引入结构体、枚举和其他项时,习惯是指定他们的完整路径
+- 使用父模块将两个具有相同名称的类型引入同一作用域
+- 使用use关键字提供新的名称
+- 使用`pub use`重导出名称
+- 嵌套路径来消除大量的use行:`use std::{cmp::Ordering,io};`
+- 通过glob运算符将所有的共有定义引入作用域:`use std::collections::*`
+### 将模块分割进不同文件
+- 模块定义时,如果模块名后边是";",而不是代码块"{}":
+  - Rust会从与模块同名的文件中加载内容
+  - 模块树的结构不会变化
