@@ -1,11 +1,9 @@
 #![allow(unused)]
-
+mod front_of_house;
 // use crate::front_of_house::hosting; // 使用绝对路径
 use back_of_house as bfh;
 use front_of_house::hosting; // 相对路径
 pub use front_of_house::serving;
-
-mod front_of_house;
 
 pub fn eat_at_restaurant() {
     // Absolute path
@@ -16,9 +14,9 @@ pub fn eat_at_restaurant() {
     meal.toast = String::from("Wheat");
     println!("I'd like {} toast please", meal.toast);
     hosting::add_to_wait_list();
-    test::add_to_wait_list();
     //-----------------------------
     bfh::fix_incorrect();
+    front_of_house::function1();
 }
 
 fn serve_order() {}
