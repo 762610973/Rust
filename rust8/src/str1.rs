@@ -57,9 +57,9 @@ pub(crate) fn test_map() {
     let teams = vec![String::from("1"), String::from("2")];
     let initial_scores = vec![10, 20];
     let mut scores: HashMap<_, _> = teams.iter().zip(initial_scores.iter()).collect();
-    /*for (key, value) in &scores {
+    for (key, value) in &scores {
         println!("{}->{}", key, value);
-    }*/
+    }
     /*for (k, v) in scores {
         println!("{}->{}", k, v);
     }*/

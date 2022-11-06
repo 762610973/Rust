@@ -26,13 +26,17 @@ fn main() {
     str1::test_map();
 }
 fn read_val_from_vector() {
-    let v = vec![1, 2, 3, 4, 5];
-    let third: &i32 = &v[2];
-    println!("third element is {}", third);
+    let mut v = vec![1, 2, 3, 4, 5];
+    let mut third = v[2];
+    third = 100;
+    println!("v = {:?}", v);
+    v[2] = 1000;
+    println!("The third element is {}", third);
     match v.get(2) {
         Some(third) => println!("The third element is {}", third),
         None => println!("There is no third element"),
     }
+    println!("v = {:?}", v);
 }
 fn read_val_from_vector_but_none_val() {
     let v = vec![1, 2, 3, 4, 5];
